@@ -226,7 +226,7 @@ def history_view(user):
                         "prompt_text": r["prompt_text"],
                         "code_text": r["code_text"],
                     }
-                    st.session_state.nav_in = "✍️ 블로그 작성"
+                    st.session_state._goto = "✍️ 블로그 작성"
                     st.rerun()
 
 
@@ -308,7 +308,7 @@ def blog_write_view(user):
             for k in ("blog_draft", "blog_draft_title", "blog_source"):
                 st.session_state.pop(k, None)
             st.session_state.view_blog_id = blog_id
-            st.session_state.nav_in = "🌐 블로그 보기"
+            st.session_state._goto = "🌐 블로그 보기"
             st.success("블로그를 발행했습니다.")
             st.rerun()
 
@@ -448,7 +448,7 @@ def shared_view(user):
             st.write(r["prompt_text"])
             if st.button("이 프롬프트로 생성하기", key=f"reuse_{r['prompt_id']}"):
                 st.session_state.reuse_prompt = r["prompt_text"]
-                st.session_state.nav_in = "✨ 코드 생성"
+                st.session_state._goto = "✨ 코드 생성"
                 st.rerun()
 
 
@@ -478,6 +478,9 @@ def main():
             st.divider()
             sidebar_api_key()
             st.divider()
+            # 다른 화면에서 메뉴 이동을 요청한 경우, 라디오 생성 전에 반영
+            if "_goto" in st.session_state:
+                st.session_state["nav_in"] = st.session_state.pop("_goto")
             nav = st.radio(
                 "메뉴",
                 ["✨ 코드 생성", "📚 내 기록", "✍️ 블로그 작성", "🌐 블로그 보기", "🔗 공유 프롬프트"],
